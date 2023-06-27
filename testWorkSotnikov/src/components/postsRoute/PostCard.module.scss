@@ -1,0 +1,68 @@
+.postcard {
+  display: flex;
+  background-color: aliceblue;
+  text-align: left;
+  border-radius: 15px;
+  padding: 5px 20px;
+  margin: 10px 0px;
+  justify-content: space-between;
+
+  > p {
+    display: flex;
+    font-size: 200%;
+    align-items: center;
+    color: rgb(18, 7, 103);
+  }
+
+  > p:hover {
+    color: blue;
+  }
+}
+
+.postcardSettings {
+  display: flex;
+
+  text-align: left;
+  border-radius: 15px;
+  padding: 5px 20px;
+  margin-top: 10px;
+
+  ul {
+    padding-left: 0px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+
+    li {
+      text-align: center;
+      list-style: none;
+      color: rgb(38, 14, 224);
+      padding: 10px;
+      font-size: 200%;
+      border-radius: 7px;
+      max-width: 500px;
+      z-index: 20;
+      transition: all 0.5ms ease-in;
+      p {
+        font-size: 50%;
+        margin: 0px;
+        padding: 0px;
+      }
+    }
+    li:last-child {
+      color: rgb(181, 8, 8);
+    }
+    li:hover {
+      color: rgb(255, 254, 254);
+      padding: 8px;
+      border: rgb(255, 255, 255) 2px solid;
+    }
+    li:last-child:hover {
+      color: rgb(203, 13, 13);
+
+      padding: 8px;
+      border: rgb(255, 47, 47) 2px solid;
+    }
+  }
+}

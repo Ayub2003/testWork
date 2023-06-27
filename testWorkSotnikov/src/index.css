@@ -1,0 +1,14 @@
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  background-image: url(assets/background-2.jpeg);
+  background-size: 200%;
+  background-attachment: fixed;
+  margin: 0%;
+  padding: 0%;
+}
+
+@media screen and (min-device-width: 800px) {
+  :root {
+    background-size: 120%;
+  }
+}

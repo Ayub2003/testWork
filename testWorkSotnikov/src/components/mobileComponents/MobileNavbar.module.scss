@@ -1,0 +1,42 @@
+.windowWrapper {
+  position: fixed;
+  right: -1%;
+  left: 1%;
+  bottom: 5px;
+  width: 98%;
+  z-index: 100;
+}
+
+@media screen and (min-device-width: 800px) {
+  .windowWrapper {
+    top: 5px;
+    height: 70px;
+  }
+}
+
+.wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  padding: 5px;
+}
+
+.navbutton {
+  text-decoration: none;
+  color: rgb(28, 13, 194);
+  padding: 5px;
+  p {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    font-weight: 600;
+  }
+
+  .icon {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    font-size: 120%;
+  }
+  transition: all 0.1s ease;
+}
