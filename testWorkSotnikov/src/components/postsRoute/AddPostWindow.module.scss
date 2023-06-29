@@ -1,0 +1,76 @@
+.windowWrapper {
+  position: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  left: 0%;
+  top: 0%;
+  width: 100%;
+  height: 100vh;
+  background-color: rgba(255, 64, 0, 0);
+  z-index: 20;
+}
+
+.window {
+  backdrop-filter: blur(10px);
+  border-radius: 15px;
+  width: 70%;
+  padding: 20px;
+  border: rgba(0, 0, 0, 0.29) 1px solid;
+  box-shadow: inset 0 0 2000px rgba(0, 0, 0, 0.304);
+
+  > p {
+    font-size: 150%;
+    margin: 0px;
+    padding: 0px;
+    font-weight: 500;
+    color: rgba(0, 0, 0, 0.726);
+  }
+  > span {
+    font-size: 100%;
+    padding-top: 10px;
+  }
+
+  form {
+    padding-top: 10px;
+  }
+
+  input {
+    width: 100%;
+    background-color: rgba(245, 245, 220, 0);
+    border: 0px;
+    font-size: 120%;
+    margin-top: 10px;
+    border-bottom: rgba(0, 0, 0, 0.429) 1px solid;
+  }
+
+  input:last-child {
+    background-color: rgb(73, 39, 247);
+    color: white;
+    font-size: 120%;
+    padding: 15px 5px;
+    border-radius: 7px;
+    margin-top: 20px;
+  }
+
+  input:focus {
+    outline: 0;
+  }
+}
+
+button {
+  background-color: rgb(73, 39, 247);
+  color: white;
+  font-size: 120%;
+  padding: 15px 5px;
+  border-radius: 7px;
+  width: 100%;
+  border: 0;
+  margin-top: 5px;
+}
+
+@media screen and (min-device-width: 800px) {
+  .window {
+    width: 50%;
+  }
+}

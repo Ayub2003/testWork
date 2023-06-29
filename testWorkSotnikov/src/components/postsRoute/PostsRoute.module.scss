@@ -1,7 +1,16 @@
+.wrapper {
+  padding-bottom: 50px;
+}
+
 .addPost {
   display: flex;
   justify-content: center;
   padding: 10px;
   font-size: 400%;
-  color: rgba(30, 30, 30, 0.614);
+  color: rgba(202, 202, 202, 0.45);
+}
+
+.addPost:hover {
+  transform: rotate(-180deg) scale(120%);
+  transition: all 0.5s ease-in-out;
 }

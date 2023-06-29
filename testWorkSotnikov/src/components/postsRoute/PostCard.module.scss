@@ -17,6 +17,13 @@
   > p:hover {
     color: blue;
   }
+
+  > article {
+    > p {
+      margin: 5px 0px;
+      padding: 0px;
+    }
+  }
 }
 
 .postcardSettings {
@@ -43,7 +50,8 @@
       border-radius: 7px;
       max-width: 500px;
       z-index: 20;
-      transition: all 0.5ms ease-in;
+      transition: all 0.5s ease;
+      border: rgba(0, 0, 0, 0) 1px solid;
       p {
         font-size: 50%;
         margin: 0px;

@@ -5,23 +5,58 @@ import { MdOutlineDelete } from "react-icons/md";
 import { MdOutlineFavoriteBorder } from "react-icons/md";
 import { MdOutlineArrowBack } from "react-icons/md";
 import { WindowBlur } from "../other/WindowBlur";
-import { useDispatch } from "react-redux";
-import { deletePost } from "../../redux/store/postsSlice/posts.slice";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  addInFavorite,
+  deleteFromFavorite,
+  setDeletePostData,
+  setEditPostData,
+  switchDeletePostDialogWindow,
+  switchEditPostDialogWindow,
+} from "../../redux/store/postsSlice/posts.slice";
 import { IPost } from "@/redux/store/postsSlice/posts.model";
 import { BiDotsVerticalRounded } from "react-icons/bi";
-import { useTransition, animated } from "@react-spring/web";
+import { AppState } from "@/redux/store/store";
 
 export const PostCard: FC<{ post: IPost }> = ({ post }) => {
   const dispatch = useDispatch();
+
   const [settingsToggle, setSettingsToggle] = useState(false);
-  const transitions = useTransition(settingsToggle, {
-    from: { opacity: 0 },
-    enter: { opacity: 1 },
-    leave: { opacity: 1 },
+
+  const favoriteIdList = useSelector(
+    (state: AppState) => state.posts.favoriteIdList
+  );
+
+  const user = useSelector((state: AppState) => {
+    for (let i = 0; i < state.posts.users.length; i++) {
+      if (state.posts.users[i].id === post.userId) {
+        return state.posts.users[i];
+      }
+    }
   });
+
   const switchSettingsToggle = () => {
     setSettingsToggle(!settingsToggle);
   };
+
+  const openEditWindow = (post: IPost) => {
+    dispatch(switchEditPostDialogWindow(true));
+    dispatch(setEditPostData(post));
+  };
+
+  const openDeleteWindow = (post: IPost) => {
+    dispatch(switchDeletePostDialogWindow(true));
+    dispatch(setDeletePostData(post));
+  };
+
+  const switchLike = (post: IPost) => {
+    if (favoriteIdList.includes(post.id)) {
+      dispatch(deleteFromFavorite(post.id));
+    } else {
+      dispatch(addInFavorite(post.id));
+    }
+  };
+
   return (
     <>
       {settingsToggle ? (
@@ -32,17 +67,33 @@ export const PostCard: FC<{ post: IPost }> = ({ post }) => {
                 <MdOutlineArrowBack />
                 <p>Back</p>
               </li>
-              <li>
+              <li
+                onClick={() => {
+                  openEditWindow(post);
+                }}
+              >
                 <AiOutlineEdit />
                 <p>Edit</p>
               </li>
-              <li>
+              <li
+                style={{
+                  color: favoriteIdList.includes(post.id)
+                    ? " rgb(148, 0, 101)"
+                    : "blue",
+                  border: favoriteIdList.includes(post.id)
+                    ? " rgb(148, 0, 101) 1px solid"
+                    : "blue",
+                }}
+                onClick={() => {
+                  switchLike(post);
+                }}
+              >
                 <MdOutlineFavoriteBorder />
-                <p>Like</p>
+                <p>{favoriteIdList.includes(post.id) ? "liked" : "like"}</p>
               </li>
               <li
                 onClick={() => {
-                  dispatch(deletePost(post));
+                  openDeleteWindow(post);
                 }}
               >
                 <MdOutlineDelete />
@@ -52,10 +103,19 @@ export const PostCard: FC<{ post: IPost }> = ({ post }) => {
           </div>
         </WindowBlur>
       ) : (
-        <div className={styles.postcard}>
+        <div
+          className={styles.postcard}
+          style={{
+            border: favoriteIdList.includes(post.id)
+              ? "blue 2px solid"
+              : "black",
+          }}
+        >
           <article>
             <h3>{post.title}</h3>
             <p>{post.body}</p>
+            <p>username: {user?.username}</p>
+            <p>email: {user?.email}</p>
           </article>
           <p onClick={switchSettingsToggle}>
             <BiDotsVerticalRounded />
