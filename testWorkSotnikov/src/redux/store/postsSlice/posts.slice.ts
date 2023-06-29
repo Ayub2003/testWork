@@ -14,9 +14,27 @@ export const fetchPosts = createAsyncThunk(
         throw new Error("Ошибка запроса данных");
       }
       const posts = await response.json();
-      await dispatch(setPosts(posts));
 
       return posts;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const fetchUsers = createAsyncThunk(
+  "posts/fetchUsers",
+  async (_, { rejectWithValue, dispatch }) => {
+    try {
+      const response = await fetch(
+        "https://jsonplaceholder.typicode.com/users"
+      );
+      if (!response.ok) {
+        throw new Error("Ошибка запроса данных");
+      }
+      const users = await response.json();
+
+      return users;
     } catch (error) {
       return rejectWithValue(error);
     }
@@ -27,12 +45,6 @@ export const postsSlice = createSlice({
   name: "posts",
   initialState: postsInitialState,
   reducers: {
-    setPosts: (state, { payload }: PayloadAction<IPost[]>) => {
-      state.posts = payload;
-    },
-    setUsers: (state, { payload }: PayloadAction<IUser[]>) => {
-      state.users = payload;
-    },
     addPost: (state, { payload }: PayloadAction<IPost>) => {
       state.posts.unshift(payload);
       console.log(state.posts.length);
@@ -85,12 +97,25 @@ export const postsSlice = createSlice({
       .addCase(fetchPosts.rejected, (state) => {
         state.postsLoadStatus = "rejected";
       });
+
+    builder
+      .addCase(
+        fetchUsers.fulfilled,
+        (state, { payload }: PayloadAction<IUser[]>) => {
+          state.users = payload;
+          state.usersLoadStatus = "success";
+        }
+      )
+      .addCase(fetchUsers.pending, (state) => {
+        state.usersLoadStatus = "loading";
+      })
+      .addCase(fetchUsers.rejected, (state) => {
+        state.usersLoadStatus = "rejected";
+      });
   },
 });
 
 export const {
-  setPosts,
-  setUsers,
   addPost,
   deletePost,
   switchAddPostDialogWindow,

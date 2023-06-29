@@ -12,4 +12,5 @@ export const postsInitialState: IPosts = {
   deletePostData: post,
   favoriteIdList: [],
   postsLoadStatus: "empty",
+  usersLoadStatus: "empty",
 };

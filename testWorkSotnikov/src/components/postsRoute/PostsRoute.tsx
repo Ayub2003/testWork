@@ -10,6 +10,7 @@ import { IoMdAddCircleOutline } from "react-icons/io";
 import { AddPostWindow } from "./AddPostWindow";
 import {
   fetchPosts,
+  fetchUsers,
   switchAddPostDialogWindow,
 } from "../../redux/store/postsSlice/posts.slice";
 import { useTransition } from "@react-spring/web";
@@ -57,7 +58,7 @@ export const PostsRoute: FC = () => {
 
   useEffect(() => {
     dispatch(fetchPosts());
-    getUsers().catch(console.error);
+    dispatch(fetchUsers());
   }, [dispatch]);
 
   const nextLimit = () => {
@@ -72,8 +73,16 @@ export const PostsRoute: FC = () => {
 
   return (
     <div className={styles.wrapper}>
-      {postsLoadStatus === "rejected" && <h1>Ошибка сервера</h1>}
-      {postsLoadStatus === "loading" && <h1>loading</h1>}
+      {postsLoadStatus === "rejected" && (
+        <WindowBlur>
+          <h1>Ошибка сервера</h1>
+        </WindowBlur>
+      )}
+      {postsLoadStatus === "loading" && (
+        <WindowBlur>
+          <h1>loading...</h1>
+        </WindowBlur>
+      )}
       {postsLoadStatus === "success" && (
         <>
           {" "}

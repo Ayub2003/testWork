@@ -45,4 +45,5 @@ export interface IPosts {
   deletePostData: IPost;
   favoriteIdList: number[];
   postsLoadStatus: "empty" | "loading" | "rejected" | "success";
+  usersLoadStatus: "empty" | "loading" | "rejected" | "success";
 }
