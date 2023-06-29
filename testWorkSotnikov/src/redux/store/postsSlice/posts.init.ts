@@ -11,4 +11,5 @@ export const postsInitialState: IPosts = {
   editPostData: post,
   deletePostData: post,
   favoriteIdList: [],
+  postsLoadStatus: "empty",
 };
