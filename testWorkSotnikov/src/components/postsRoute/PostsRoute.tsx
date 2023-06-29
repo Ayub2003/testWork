@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import styles from "./PostsRoute.module.scss";
 import { AppDispatch, AppState } from "@/redux/store/store";
 import { IPost } from "@/redux/store/postsSlice/posts.model";
-import { getPosts, getUsers } from "../../service/posts.service";
 import { PostCard } from "./PostCard";
 import { WindowBlur } from "../other/WindowBlur";
 import { IoMdAddCircleOutline } from "react-icons/io";
@@ -36,6 +35,10 @@ export const PostsRoute: FC = () => {
 
   const postsLoadStatus = useSelector(
     (state: AppState) => state.posts.postsLoadStatus
+  );
+
+  const usersLoadStatus = useSelector(
+    (state: AppState) => state.posts.usersLoadStatus
   );
 
   const animation = {
@@ -73,17 +76,17 @@ export const PostsRoute: FC = () => {
 
   return (
     <div className={styles.wrapper}>
-      {postsLoadStatus === "rejected" && (
+      {(postsLoadStatus === "rejected" || usersLoadStatus === "rejected") && (
         <WindowBlur>
           <h1>Ошибка сервера</h1>
         </WindowBlur>
       )}
-      {postsLoadStatus === "loading" && (
+      {(postsLoadStatus === "loading" || usersLoadStatus === "loading") && (
         <WindowBlur>
           <h1>loading...</h1>
         </WindowBlur>
       )}
-      {postsLoadStatus === "success" && (
+      {postsLoadStatus === "success" && usersLoadStatus === "success" && (
         <>
           {" "}
           <WindowBlur>
