@@ -3,17 +3,17 @@ import styles from "./AddPostWindow.module.scss";
 import { useDispatch, useSelector } from "react-redux";
 import {
   deleteFromFavorite,
-  deletePost,
+  deletePostById,
   switchDeletePostDialogWindow,
 } from "../../redux/store/postsSlice/posts.slice";
 import { animated } from "@react-spring/web";
-import { AppState } from "@/redux/store/store";
+import {AppState, AppDispatch} from "@/redux/store/store";
 import { IPost } from "../../redux/store/postsSlice/posts.model";
 
 export const DeletePostWindow: FC<any> = (props) => {
   const { springStyle } = props;
 
-  const dispatch = useDispatch();
+  const dispatch: AppDispatch = useDispatch();
 
   const favoriteIdList = useSelector(
     (state: AppState) => state.posts.favoriteIdList
@@ -25,7 +25,7 @@ export const DeletePostWindow: FC<any> = (props) => {
 
   const deletePostCard = (post: IPost) => {
     dispatch(switchDeletePostDialogWindow(false));
-    dispatch(deletePost(post));
+    dispatch(deletePostById(post.id));
     if (favoriteIdList.includes(post.id)) {
       dispatch(deleteFromFavorite(post.id));
     }
@@ -40,7 +40,7 @@ export const DeletePostWindow: FC<any> = (props) => {
           onClick={() => {
             deletePostCard(deletePostData);
           }}
-          style={{ backgroundColor: "rgb(181, 8, 8)" }}
+          style={{ backgroundColor: "rgb(183,65,54)" }}
         >
           Удалить
         </button>
