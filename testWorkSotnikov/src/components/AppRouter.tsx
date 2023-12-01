@@ -1,4 +1,4 @@
-import { FC } from "react";
+import {FC, Fragment} from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { publicRoutes } from "../routes";
 import { POSTS_ROUTE } from "../utils/consts";
@@ -9,14 +9,13 @@ export const AppRouter: FC = () => {
     <Layout>
       <Routes>
         {publicRoutes.map(({ path, Component }, index) => (
-          <>
-            <Route key={index} path={path} element={<Component />} />
+          <Fragment key={index}>
+            <Route path={path} element={<Component />} />
             <Route
-              key={index}
               path={"*"}
               element={<Navigate key={index} to={POSTS_ROUTE} />}
             />
-          </>
+          </Fragment>
         ))}
       </Routes>
     </Layout>

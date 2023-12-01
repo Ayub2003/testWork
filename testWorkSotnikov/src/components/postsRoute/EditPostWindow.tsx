@@ -19,7 +19,7 @@ export const EditPostWindow: FC<{ springStyle: any }> = (props) => {
   );
   const onSubmit = (data: any) => {
     dispatch(switchEditPostDialogWindow(false));
-    dispatch(deletePost(editPostData));
+    dispatch(deletePost(editPostData.id));
     dispatch(
       addPost({
         userId: Number(data.userId),
@@ -41,8 +41,9 @@ export const EditPostWindow: FC<{ springStyle: any }> = (props) => {
       <animated.div style={springStyle} className={styles.window}>
         <p>Изменить пост</p>
         <form onSubmit={handleSubmit(onSubmit)}>
-          {fields.map((field) => (
+          {fields.map((field, index) => (
             <input
+                key={index}
               defaultValue={field.value}
               placeholder={field.field}
               {...register(field.field, { required: true })}

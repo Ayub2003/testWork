@@ -3,8 +3,7 @@ import styles from "./AddPostWindow.module.scss";
 import { useDispatch, useSelector } from "react-redux";
 import {
   deleteFromFavorite,
-  deletePostById,
-  switchDeletePostDialogWindow,
+  switchDeletePostDialogWindow, useDeletePostMutation,
 } from "../../redux/store/postsSlice/posts.slice";
 import { animated } from "@react-spring/web";
 import {AppState, AppDispatch} from "@/redux/store/store";
@@ -14,6 +13,7 @@ export const DeletePostWindow: FC<any> = (props) => {
   const { springStyle } = props;
 
   const dispatch: AppDispatch = useDispatch();
+  const [deletePost, {isLoading}] = useDeletePostMutation()
 
   const favoriteIdList = useSelector(
     (state: AppState) => state.posts.favoriteIdList
@@ -23,18 +23,20 @@ export const DeletePostWindow: FC<any> = (props) => {
     (state: AppState) => state.posts.deletePostData
   );
 
-  const deletePostCard = (post: IPost) => {
-    dispatch(switchDeletePostDialogWindow(false));
-    dispatch(deletePostById(post.id));
+  const deletePostCard = async (post: IPost) => {
+    // dispatch(deletePostById(post.id));
+    await deletePost(post.id)
     if (favoriteIdList.includes(post.id)) {
       dispatch(deleteFromFavorite(post.id));
     }
+    await dispatch(switchDeletePostDialogWindow(false));
+
   };
 
   return (
     <div className={styles.windowWrapper}>
       <animated.div style={springStyle} className={styles.window}>
-        <p>Удаление поста</p>
+        {isLoading?<p>Удаление...</p>:<p>Удаление поста</p>}
         <span>Вы уверены, что хотите удалить пост?</span>
         <button
           onClick={() => {

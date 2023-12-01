@@ -1,37 +1,37 @@
 import { FC } from "react";
 import styles from "./AddPostWindow.module.scss";
 import { useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
+import {useDispatch} from 'react-redux'
 import {
-  addPost,
-  switchAddPostDialogWindow,
+    switchAddPostDialogWindow, useAddNewPostMutation,
 } from "../../redux/store/postsSlice/posts.slice";
 import { animated } from "@react-spring/web";
 
 export const AddPostWindow: FC<any> = (props) => {
   const { springStyle } = props;
-  const dispatch = useDispatch();
+  const dispatch = useDispatch()
   const { register, handleSubmit } = useForm();
-  const onSubmit = (data: any) => {
-    dispatch(switchAddPostDialogWindow(false));
-    dispatch(
-      addPost({
-        userId: Number(data.userId),
-        id: Number(data.id),
-        title: data.title,
-        body: data.body,
-      })
-    );
+  const [addNewPost, {isLoading}] = useAddNewPostMutation()
+  const onSubmit = async (data: any) => {
+      await addNewPost({
+          userId: Number(data.userId),
+          id: Number(data.id),
+          title: data.title,
+          body: data.body,
+        }).unwrap()
+      await dispatch(switchAddPostDialogWindow(false));
+
   };
   const fields = ["userId", "id", "title", "body"];
 
   return (
     <div className={styles.windowWrapper}>
       <animated.div style={springStyle} className={styles.window}>
-        <p>Добавить пост</p>
+        {isLoading?<p>Добавление...</p>:<p>Добавить пост</p>}
         <form onSubmit={handleSubmit(onSubmit)}>
-          {fields.map((field) => (
+          {fields.map((field, index) => (
             <input
+                key={index}
               placeholder={field}
               {...register(field, { required: true })}
               type={field === "userId" || field === "id" ? "number" : "text"}

@@ -1,44 +1,81 @@
-import {PayloadAction, createAsyncThunk, createSlice} from "@reduxjs/toolkit";
+import {PayloadAction, createAsyncThunk, createSlice, current} from "@reduxjs/toolkit";
 import { IPost, IUser } from "./posts.model";
 import { postsInitialState } from "./posts.init";
+import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react";
 
-export const fetchPosts = createAsyncThunk(
-  "posts/fetchPosts",
-  async (_, { rejectWithValue  }) => {
-    try {
-      const response = await fetch(
-        "https://jsonplaceholder.typicode.com/posts"
-      );
-      if (!response.ok) {
-        throw new Error("Ошибка запроса данных");
-      }
-      const posts = await response.json();
 
-      return posts;
-    } catch (error) {
-        return rejectWithValue(error);
-    }
-  }
-);
 
-export const deletePostById = createAsyncThunk(
-    "posts/deletePostById",
-    async(id: number, {rejectWithValue, dispatch})=>{
-          try{
-            const response = await fetch(
-                `https://jsonplaceholder.typicode.com/posts/${id}`,
-                {method:'DELETE'})
+export const postApi = createApi({
+  reducerPath: 'postApi',
+  baseQuery: fetchBaseQuery({ baseUrl: 'https://jsonplaceholder.typicode.com' }),
+  tagTypes: ['Post'],
+  endpoints: (builder) => ({
+    getPostById: builder.query({
+      query: (id) => `posts/${id}`,
+    }),
+    getAllPosts: builder.query({
+      query: () => 'posts',
+      providesTags: ['Post']
 
-            if(!response.ok){
-              throw new Error('Ошибка удаления поста. Ошибка сервера')
-            }
+    }),
+    addNewPost: builder.mutation({
+      query: (post: IPost) => ({
+        url: 'posts',
+        method: 'POST',
+        body: post
+      }),
+      // invalidatesTags: ['Post']
+    }),
 
-            dispatch(deletePost(id))
+    deletePost: builder.mutation({
+      query: (id: number) => ({
+        url: `posts/${id}`,
+        method: 'DELETE',
+      })
+    }),
 
-          } catch (error){
-            return rejectWithValue(error)
-          }
+  }),
 })
+export const { useGetPostByIdQuery, useGetAllPostsQuery, useAddNewPostMutation, useDeletePostMutation } = postApi
+
+// //------------------legacy------------
+// export const fetchPosts = createAsyncThunk(
+//   "posts/fetchPosts",
+//   async (_, { rejectWithValue  }) => {
+//     try {
+//       const response = await fetch(
+//         "https://jsonplaceholder.typicode.com/posts"
+//       );
+//       if (!response.ok) {
+//         throw new Error("Ошибка запроса данных");
+//       }
+//       const posts = await response.json();
+//
+//       return posts;
+//     } catch (error) {
+//         return rejectWithValue(error);
+//     }
+//   }
+// );
+
+// export const deletePostById = createAsyncThunk(
+//     "posts/deletePostById",
+//     async(id: number, {rejectWithValue, dispatch})=>{
+//           try{
+//             const response = await fetch(
+//                 `https://jsonplaceholder.typicode.com/posts/${id}`,
+//                 {method:'DELETE'})
+//
+//             if(!response.ok){
+//               throw new Error('Ошибка удаления поста. Ошибка сервера')
+//             }
+//
+//             dispatch(deletePost(id))
+//
+//           } catch (error){
+//             return rejectWithValue(error)
+//           }
+// })
 
 export const fetchUsers = createAsyncThunk(
   "posts/fetchUsers",
@@ -59,6 +96,7 @@ export const fetchUsers = createAsyncThunk(
     }
   }
 );
+
 
 export const postsSlice = createSlice({
   name: "posts",
@@ -104,19 +142,8 @@ export const postsSlice = createSlice({
       });
     },
   },
-  extraReducers(builder) {
-    builder
-        .addCase(fetchPosts.fulfilled,(state, { payload }) => {
-        state.posts = payload;
-        state.postsLoadStatus = "success";
-      })
-      .addCase(fetchPosts.pending, (state) => {
-        state.postsLoadStatus = "loading";
-      })
-      .addCase(fetchPosts.rejected, (state) => {
-        state.postsLoadStatus = "rejected";
-      });
 
+  extraReducers(builder) {
     builder
       .addCase(
         fetchUsers.fulfilled,
@@ -131,7 +158,48 @@ export const postsSlice = createSlice({
       .addCase(fetchUsers.rejected, (state) => {
         state.usersLoadStatus = "rejected";
       });
-  },
+
+    builder
+        .addMatcher(postApi.endpoints?.getAllPosts.matchFulfilled,(state, { payload }) => {
+          state.posts = payload;
+          state.postsLoadStatus = "success";
+        })
+        .addMatcher(postApi.endpoints?.getAllPosts.matchPending, (state) => {
+          state.postsLoadStatus = "loading";
+        })
+        .addMatcher(postApi.endpoints?.getAllPosts.matchRejected, (state) => {
+          state.postsLoadStatus = "rejected";
+        });
+
+    builder
+        .addMatcher(
+        postApi.endpoints?.addNewPost.matchFulfilled,
+        (state, { payload }: PayloadAction<IPost>) => {
+          state.posts.unshift(payload);
+        })
+        .addMatcher(
+            postApi.endpoints?.addNewPost.matchRejected,
+            ()=> {console.log('Ошибка добавления поста')})
+
+    builder
+        .addMatcher(
+            postApi.endpoints?.deletePost.matchFulfilled,
+            (state, { payload }: PayloadAction<number>) => {
+              console.log(current(state).posts)
+              console.log('payload: ',payload)
+              state.posts = state.posts.filter((element: IPost) => (element.id !== payload))
+              console.log(current(state.posts))
+              console.log('успешное удаление')
+            }
+        )
+        .addMatcher(
+            postApi.endpoints?.deletePost.matchRejected,
+            ()=>{console.log('Ошибка удаления')}
+        )
+
+
+  }
+
 });
 
 export const {

@@ -19,6 +19,7 @@ specifiers:
   react-datasheet-grid: ^4.11.0
   react-dom: ^18.2.0
   react-hook-form: ^7.45.0
+  react-icons: ^4.11.0
   react-redux: ^8.1.1
   react-router-dom: ^6.14.0
   react-spreadsheet: ^0.8.3
@@ -39,6 +40,7 @@ dependencies:
   react-datasheet-grid: 4.11.0_biqbaboplfbrettd7655fr4n2y
   react-dom: 18.2.0_react@18.2.0
   react-hook-form: 7.45.0_react@18.2.0
+  react-icons: 4.11.0_react@18.2.0
   react-redux: 8.1.1_hrrtw4it2dqo6rzcqzvl36ff7i
   react-router-dom: 6.14.0_biqbaboplfbrettd7655fr4n2y
   react-spreadsheet: 0.8.3_2szjah6qrhd6fr2kgr64p4pjgm
@@ -2095,6 +2097,14 @@ packages:
     engines: {node: '>=12.22.0'}
     peerDependencies:
       react: ^16.8.0 || ^17 || ^18
+    dependencies:
+      react: 18.2.0
+    dev: false
+
+  /react-icons/4.11.0_react@18.2.0:
+    resolution: {integrity: sha512-V+4khzYcE5EBk/BvcuYRq6V/osf11ODUM2J8hg2FDSswRrGvqiYUYPRy4OdrWaQOBj4NcpJfmHZLNaD+VH0TyA==}
+    peerDependencies:
+      react: '*'
     dependencies:
       react: 18.2.0
     dev: false

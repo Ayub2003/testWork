@@ -8,62 +8,54 @@ import { WindowBlur } from "../other/WindowBlur";
 import { IoMdAddCircleOutline } from "react-icons/io";
 import { AddPostWindow } from "./AddPostWindow";
 import {
-  fetchPosts,
   fetchUsers,
-  switchAddPostDialogWindow,
+  switchAddPostDialogWindow, useGetAllPostsQuery
 } from "../../redux/store/postsSlice/posts.slice";
 import { useTransition } from "@react-spring/web";
 import { EditPostWindow } from "./EditPostWindow";
 import { DeletePostWindow } from "./DeletePostWindow";
 
+
+const modalAnimation = {
+  from: { opacity: 0, x:-500, y: 200, transform: 'rotate(-0.1turn)'  },
+  enter: { opacity: 1, x: 0,y: 0, transform: "rotate(0turn)"},
+  leave: { opacity: 0, x:500, y: 200, transform: 'rotate(0.1turn)'}
+};
+
 export const PostsRoute: FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [limit, setLimit] = useState(10);
   const selectedPosts = useSelector((state: AppState) => state.posts.posts);
+  const {isError, isLoading, isSuccess} = useGetAllPostsQuery(null)
 
   const isOpenAddPostDialogWindow = useSelector(
     (state: AppState) => state.posts.isOpenAddPostDialogWindow
   );
-
   const isOpenEditPostWindow = useSelector(
     (state: AppState) => state.posts.isOpenEditPostDialogWindow
   );
-
   const isOpenDeletePostDialogWindow = useSelector(
     (state: AppState) => state.posts.isOpenDeletePostDialogWindow
   );
 
-  const postsLoadStatus = useSelector(
-    (state: AppState) => state.posts.postsLoadStatus
-  );
-
-  const usersLoadStatus = useSelector(
-    (state: AppState) => state.posts.usersLoadStatus
-  );
-
-  const animation = {
-    from: { opacity: 0 },
-    enter: { opacity: 1 },
-    leave: { opacity: 0 },
-  };
 
   const transitionsAddPost = useTransition(
     isOpenAddPostDialogWindow,
-    animation
+    modalAnimation
   );
-
   const transitionsDeletePost = useTransition(
     isOpenDeletePostDialogWindow,
-    animation
+    modalAnimation
   );
 
-  const transitionsEditPost = useTransition(isOpenEditPostWindow, animation);
+  const transitionsEditPost = useTransition(isOpenEditPostWindow, modalAnimation);
 
   useEffect(() => {
-    dispatch(fetchPosts());
     dispatch(fetchUsers());
   }, [dispatch]);
 
+
+  //bad code, need to fix with api-param '?limit=10/20/50/.../noLimit'
   const nextLimit = () => {
     if (limit < 20) {
       setLimit(limit + 10);
@@ -76,17 +68,17 @@ export const PostsRoute: FC = () => {
 
   return (
     <div className={styles.wrapper}>
-      {(postsLoadStatus === "rejected" || usersLoadStatus === "rejected") && (
+      {isError && (
         <WindowBlur>
           <h1>Ошибка сервера</h1>
         </WindowBlur>
       )}
-      {(postsLoadStatus === "loading" || usersLoadStatus === "loading") && (
+      {isLoading && (
         <WindowBlur>
           <h1>loading...</h1>
         </WindowBlur>
       )}
-      {postsLoadStatus === "success" && usersLoadStatus === "success" && (
+      {isSuccess && (
         <>
           {" "}
           <WindowBlur>
